@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LogIn, Mail, Lock, User, Github } from 'lucide-react';
+import { registerUser } from '../services/authService';
 
 interface RegisterPageProps {
   onClose: () => void;
@@ -8,14 +9,21 @@ interface RegisterPageProps {
 }
 
 export function RegisterPage({ onClose, theme, onLoginClick }: RegisterPageProps) {
-  const [fullName, setFullName] = useState('');
+  const [username, setusername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic
-    console.log('Register attempt:', { fullName, email, password });
+    try {
+      await registerUser({ username, email, password }); // Call the API
+      setSuccess(true);
+      setError('');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed');
+    }
   };
 
   const handleGoogleSignIn = async () => {
@@ -42,17 +50,20 @@ export function RegisterPage({ onClose, theme, onLoginClick }: RegisterPageProps
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {success && <p className="text-green-500">Registration successful!</p>}
+          {error && <p className="text-red-500">{error}</p>}
+
           <div>
-            <label htmlFor="fullName" className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
+            <label htmlFor="username" className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>
               Full Name
             </label>
             <div className="relative">
               <User className={`absolute left-3 top-1/2 -translate-y-1/2 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`} size={20} />
               <input
                 type="text"
-                id="fullName"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                id="username"
+                value={username}
+                onChange={(e) => setusername(e.target.value)}
                 className={`w-full pl-10 pr-4 py-2 rounded-lg border ${
                   theme === 'dark' 
                     ? 'bg-gray-800 border-gray-700 text-white focus:border-blue-500' 

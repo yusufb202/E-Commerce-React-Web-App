@@ -36,6 +36,12 @@ export function App() {
     }
   }
 
+const apiUrl = import.meta.env.VITE_API_URL;
+  fetch(`${apiUrl}/User/register`)
+   .then((response) => response.json())
+   .then((data) => console.log(data));
+
+
   const handleHomeClick = () => {
     setSelectedCategory(null);
   };
@@ -46,6 +52,10 @@ export function App() {
   };
 
   const handleRegisterClick = () => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+    fetch(`${apiUrl}/User/register`)
+   .then((response) => response.json())
+   .then((data) => console.log(data));
     setIsLoginOpen(false);
     setIsRegisterOpen(true);
   };
